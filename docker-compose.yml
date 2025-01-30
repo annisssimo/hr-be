@@ -2,7 +2,7 @@ services:
     career_day_dev:
         container_name: 'career_day_dev'
         ports:
-            - '5432:5432'
+            - '5438:5432'
         environment:
             POSTGRES_USER: 'postgres'
             POSTGRES_PASSWORD: 'postgres'

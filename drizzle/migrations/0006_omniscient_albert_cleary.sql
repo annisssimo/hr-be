@@ -1,0 +1,1 @@
+ALTER TABLE "career_day"."users" ALTER COLUMN "manager_id" DROP DEFAULT;

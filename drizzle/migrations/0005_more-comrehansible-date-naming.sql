@@ -1,0 +1,1 @@
+ALTER TABLE "career_day"."users" RENAME COLUMN "date" TO "status_assignment_date";

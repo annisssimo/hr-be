@@ -1,0 +1,1 @@
+ALTER TABLE "career_day"."users" ADD COLUMN "date" date DEFAULT null;

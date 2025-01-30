@@ -68,4 +68,3 @@ volumes:  #specifies where data would be stored
 ```
 
 If you encouner any errors just write in CLI tool `rm -fr`
-

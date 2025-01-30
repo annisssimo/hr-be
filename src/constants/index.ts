@@ -9,3 +9,7 @@ export const enum USER_ROLE {
     EMPLOYEE = 'employee',
     ADMIN = 'admin',
 }
+
+export const enum PROVIDERS {
+    DRIZZLE = 'drizzle',
+}

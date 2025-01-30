@@ -2,29 +2,30 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Injectable } from '@nestjs/common';
 import { settings } from 'config/settings';
 import { Client } from 'pg';
-
 @Injectable()
-export class DrizzleProvider {
+export class DrizzleService {
     private drizzle;
     private client: Client;
-
     constructor() {
-        this.connect();
-    }
-
-    connect() {
         this.client = new Client({
             connectionString: settings.DATABASE.url,
         });
         this.client.connect();
-        this.drizzle = drizzle(this.client);
     }
 
-    disconnect() {
-        this.client.end();
+    public async connect(): Promise<void> {
+        try {
+            this.drizzle = drizzle({ client: this.client });
+        } catch (error) {
+            throw new Error(`Database conection failed: ${error.message}`);
+        }
     }
 
-    getDrizzle() {
+    public async disconnect() {
+        await this.client.end();
+    }
+
+    public getDrizzle() {
         return this.drizzle;
     }
 }
