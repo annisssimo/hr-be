@@ -10,11 +10,6 @@
         "target": "ES2021",
         "sourceMap": true,
         "outDir": "./dist",
-        "baseUrl": "./",
-        "paths": {
-            "src/*": ["./src/*"],
-            "config/*": ["./config/*"]
-        },
         "incremental": true,
         "skipLibCheck": true,
         "strictNullChecks": true,

@@ -1,7 +1,8 @@
-import { DrizzleProvider } from './../database/providers/drizzle.provider';
 import { Module } from '@nestjs/common';
+
+import { ProvidersModule } from '../database/providers/providers.module';
+import { DrizzleProvider } from '../database/providers/drizzle.provider';
 import { UsersService } from './users.service';
-import { ProvidersModule } from 'src/modules/shared/database/providers/providers.module';
 
 @Module({
     imports: [ProvidersModule],

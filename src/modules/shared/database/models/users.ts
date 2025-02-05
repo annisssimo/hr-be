@@ -1,7 +1,8 @@
-import { settings } from 'config/settings';
 import { date, pgSchema, uuid, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-import { USER_ROLE, USER_STATUS } from 'src/constants';
+
+import { settings } from '../../../../../config/settings';
+import { USER_STATUS, USER_ROLE } from '../../../../constants';
 
 export const careerDaySchema = pgSchema(settings.DATABASE.schema);
 

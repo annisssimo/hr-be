@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
-import { settings } from 'config/settings';
+
+import { settings } from '../../../../../config/settings';
 
 @Injectable()
 export class CloudinaryService {

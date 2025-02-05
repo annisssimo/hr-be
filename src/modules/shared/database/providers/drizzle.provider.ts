@@ -1,4 +1,4 @@
-import { PROVIDERS } from 'src/constants';
+import { PROVIDERS } from '../../../../constants';
 import { DrizzleService } from './drizzle.service';
 
 export const DrizzleProvider = {

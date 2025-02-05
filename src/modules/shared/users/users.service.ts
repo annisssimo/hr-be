@@ -1,11 +1,11 @@
-import { User, users } from 'src/modules/shared/database/models';
 import { Injectable, Inject } from '@nestjs/common';
 import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { PROVIDERS } from 'src/constants';
-import { RegisterInputParams } from 'src/modules/endpoints/auth/register/register.schema';
+
+import { PROVIDERS } from '../../../constants';
+import { RegisterInputParams } from '../../endpoints/auth/register/register.schema';
+import { users, User } from '../database/models';
 
 @Injectable()
 export class UsersService {

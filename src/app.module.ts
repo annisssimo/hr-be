@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+
+import { settings } from '../config/settings';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EndpointsModule } from './modules/endpoints/endpoints.module';
-import { JwtModule } from '@nestjs/jwt';
-import { settings } from 'config/settings';
 
 @Module({
     imports: [

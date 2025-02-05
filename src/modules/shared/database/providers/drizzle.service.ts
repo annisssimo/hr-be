@@ -1,7 +1,9 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Injectable } from '@nestjs/common';
-import { settings } from 'config/settings';
 import { Client } from 'pg';
+
+import { settings } from '../../../../../config/settings';
+
 @Injectable()
 export class DrizzleService {
     private drizzle;
