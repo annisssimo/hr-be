@@ -6,27 +6,17 @@ import { Api } from './api';
 import { PROVIDERS } from '../../src/constants';
 import { Factory } from './factories';
 
-export function setupTestApp() {
-    let testContext: { app: any; api: Api; db: NodePgDatabase; factory: Factory };
+export async function setupTestApp() {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+        imports: [AppModule],
+    }).compile();
 
-    beforeAll(async () => {
-        const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [AppModule],
-        }).compile();
+    const app = moduleFixture.createNestApplication();
+    await app.init();
 
-        const app = moduleFixture.createNestApplication();
-        await app.init();
+    const api = new Api(app);
+    const db = app.get<NodePgDatabase>(PROVIDERS.DRIZZLE);
+    const factory = new Factory(db, api);
 
-        const api = new Api(app);
-        const db = app.get<NodePgDatabase>(PROVIDERS.DRIZZLE);
-        const factory = new Factory(db, api);
-
-        testContext = { app, api, db, factory };
-    });
-
-    afterAll(async () => {
-        await testContext.app.close();
-    });
-
-    return () => testContext;
+    return { app, api, db, factory };
 }

@@ -1,11 +1,12 @@
 import { faker } from '@faker-js/faker';
-import { Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { stub } from 'sinon';
+import { eq } from 'drizzle-orm';
 
 import { PROVIDERS, USER_ROLE, USER_STATUS } from '../../src/constants';
-import { User } from '../../src/modules/shared/database/models';
+import { User, users } from '../../src/modules/shared/database/models';
 import { Api } from './api';
+import { ERROR_MESSAGES } from '../../src/constants/error-messages';
 
 @Injectable()
 export class Factory {
@@ -33,14 +34,22 @@ export class Factory {
     public async user(overrides: Partial<User> = {}) {
         const payload = await this.userPayload(overrides);
 
-        const response = await this.api.request.register(payload);
+        const existingUser = await this.drizzle
+            .select()
+            .from(users)
+            .where(eq(users.email, payload.email))
+            .limit(1);
+
+        if (existingUser.length > 0) {
+            throw new ConflictException(ERROR_MESSAGES.USER_ALREADY_EXISTS);
+        }
+
+        const user = await this.drizzle.insert(users).values(payload).returning();
 
         return {
-            result: response,
+            result: user,
             payload,
-            dependencies: {
-                cloudinaryMock: stub(),
-            },
+            dependencies: {},
         };
     }
 }
