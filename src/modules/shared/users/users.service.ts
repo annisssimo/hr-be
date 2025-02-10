@@ -1,10 +1,10 @@
-import { User, users } from '../database/models';
-import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
 import { hash } from 'bcryptjs';
+import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+
+import { User, users } from '../database/models';
 import { PROVIDERS } from '../../../constants';
 import { RegisterInputParams } from '../../endpoints/auth/register/register.schema';
-
 @Injectable()
 export class UsersService {
     constructor(@Inject(PROVIDERS.DRIZZLE) private readonly drizzle: NodePgDatabase) {}

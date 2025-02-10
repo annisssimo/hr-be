@@ -1,7 +1,7 @@
+import { eq } from 'drizzle-orm';
 import { faker } from '@faker-js/faker';
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { eq } from 'drizzle-orm';
 import { hash } from 'bcryptjs';
 
 import { PROVIDERS, USER_ROLE, USER_STATUS } from '../../src/constants';
@@ -52,7 +52,7 @@ export class Factory {
             .returning();
 
         return {
-            result: user,
+            result: user[0],
             payload,
             dependencies: {},
         };

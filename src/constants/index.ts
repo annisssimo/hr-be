@@ -14,3 +14,8 @@ export const enum PROVIDERS {
     DRIZZLE = 'drizzle',
     JWT_SERVICE = 'JWTService',
 }
+
+export const enum SORT_OPTION {
+    ASC = 'asc',
+    DESC = 'desc',
+}
