@@ -12,4 +12,5 @@ export const enum USER_ROLE {
 
 export const enum PROVIDERS {
     DRIZZLE = 'drizzle',
+    JWT_SERVICE = 'JWTService',
 }

@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
+import { hash } from 'bcryptjs';
 
 import { PROVIDERS, USER_ROLE, USER_STATUS } from '../../src/constants';
 import { User, users } from '../../src/modules/shared/database/models';
@@ -43,8 +44,12 @@ export class Factory {
         if (existingUser.length > 0) {
             throw new ConflictException(ERROR_MESSAGES.USER_ALREADY_EXISTS);
         }
+        const hashedPassword = await hash(payload.password, 8);
 
-        const user = await this.drizzle.insert(users).values(payload).returning();
+        const user = await this.drizzle
+            .insert(users)
+            .values({ ...payload, password: hashedPassword })
+            .returning();
 
         return {
             result: user,

@@ -1,62 +1,62 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1737620729160,
-      "tag": "0000_create-schema-and-users-migartion",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1737622130106,
-      "tag": "0001_alter-users-migartion",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1737979834926,
-      "tag": "0002_add-users-status-assign-date",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1738080171291,
-      "tag": "0003_user-role-rework",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1738081122170,
-      "tag": "0004_user-role-fix",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1738085712300,
-      "tag": "0005_more-comrehansible-date-naming",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1738235552218,
-      "tag": "0006_omniscient_albert_cleary",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1738235887599,
-      "tag": "0007_flowery_pet_avengers",
-      "breakpoints": true
-    }
-  ]
+    "version": "7",
+    "dialect": "postgresql",
+    "entries": [
+        {
+            "idx": 0,
+            "version": "7",
+            "when": 1737620729160,
+            "tag": "0000_create-schema-and-users-migartion",
+            "breakpoints": true
+        },
+        {
+            "idx": 1,
+            "version": "7",
+            "when": 1737622130106,
+            "tag": "0001_alter-users-migartion",
+            "breakpoints": true
+        },
+        {
+            "idx": 2,
+            "version": "7",
+            "when": 1737979834926,
+            "tag": "0002_add-users-status-assign-date",
+            "breakpoints": true
+        },
+        {
+            "idx": 3,
+            "version": "7",
+            "when": 1738080171291,
+            "tag": "0003_user-role-rework",
+            "breakpoints": true
+        },
+        {
+            "idx": 4,
+            "version": "7",
+            "when": 1738081122170,
+            "tag": "0004_user-role-fix",
+            "breakpoints": true
+        },
+        {
+            "idx": 5,
+            "version": "7",
+            "when": 1738085712300,
+            "tag": "0005_more-comrehansible-date-naming",
+            "breakpoints": true
+        },
+        {
+            "idx": 6,
+            "version": "7",
+            "when": 1738235552218,
+            "tag": "0006_omniscient_albert_cleary",
+            "breakpoints": true
+        },
+        {
+            "idx": 7,
+            "version": "7",
+            "when": 1738235887599,
+            "tag": "0007_flowery_pet_avengers",
+            "breakpoints": true
+        }
+    ]
 }

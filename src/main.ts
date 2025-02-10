@@ -7,6 +7,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.setGlobalPrefix('api');
     app.useGlobalGuards(app.get(DbConnectionGuard));
+    app.enableCors();
     await app.listen(3000);
 }
 bootstrap();

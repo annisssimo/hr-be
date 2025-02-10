@@ -25,7 +25,7 @@ describe('[POST] api/v1/auth/register', () => {
         const payload = await factory.userPayload();
         const result = await api.request.register(payload);
 
-        expect(result.status).toBe(201);
+        expect(result.status).toBe(204);
 
         const [createdUser] = await db.select().from(users).where(eq(users.email, payload.email));
         expect(createdUser).toBeDefined();

@@ -1,123 +1,117 @@
 {
-  "id": "accee9db-13ad-4e88-8943-12ce6ab055da",
-  "prevId": "621b3551-f0dc-4fb2-b746-6b40f17fd7c1",
-  "version": "7",
-  "dialect": "postgresql",
-  "tables": {
-    "career_day.users": {
-      "name": "users",
-      "schema": "career_day",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "first_name": {
-          "name": "first_name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "last_name": {
-          "name": "last_name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "manager_id": {
-          "name": "manager_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false,
-          "default": null
-        },
-        "password": {
-          "name": "password",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "avatar": {
-          "name": "avatar",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "default": null
-        },
-        "status": {
-          "name": "status",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'pending'"
-        },
-        "role": {
-          "name": "role",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'employee'"
-        },
-        "date": {
-          "name": "date",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false,
-          "default": null
+    "id": "accee9db-13ad-4e88-8943-12ce6ab055da",
+    "prevId": "621b3551-f0dc-4fb2-b746-6b40f17fd7c1",
+    "version": "7",
+    "dialect": "postgresql",
+    "tables": {
+        "career_day.users": {
+            "name": "users",
+            "schema": "career_day",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "first_name": {
+                    "name": "first_name",
+                    "type": "varchar(255)",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "last_name": {
+                    "name": "last_name",
+                    "type": "varchar(255)",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "email": {
+                    "name": "email",
+                    "type": "varchar(255)",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "manager_id": {
+                    "name": "manager_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "default": null
+                },
+                "password": {
+                    "name": "password",
+                    "type": "varchar(255)",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "avatar": {
+                    "name": "avatar",
+                    "type": "varchar(255)",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "default": null
+                },
+                "status": {
+                    "name": "status",
+                    "type": "varchar",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "'pending'"
+                },
+                "role": {
+                    "name": "role",
+                    "type": "varchar",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "'employee'"
+                },
+                "date": {
+                    "name": "date",
+                    "type": "date",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "default": null
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "users_manager_id_users_id_fk": {
+                    "name": "users_manager_id_users_id_fk",
+                    "tableFrom": "users",
+                    "tableTo": "users",
+                    "schemaTo": "career_day",
+                    "columnsFrom": ["manager_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {
+                "users_email_unique": {
+                    "name": "users_email_unique",
+                    "nullsNotDistinct": false,
+                    "columns": ["email"]
+                }
+            },
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
         }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "users_manager_id_users_id_fk": {
-          "name": "users_manager_id_users_id_fk",
-          "tableFrom": "users",
-          "tableTo": "users",
-          "schemaTo": "career_day",
-          "columnsFrom": [
-            "manager_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "users_email_unique": {
-          "name": "users_email_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
+    },
+    "enums": {},
+    "schemas": {
+        "career_day": "career_day"
+    },
+    "sequences": {},
+    "roles": {},
+    "policies": {},
+    "views": {},
+    "_meta": {
+        "columns": {},
+        "schemas": {},
+        "tables": {}
     }
-  },
-  "enums": {},
-  "schemas": {
-    "career_day": "career_day"
-  },
-  "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {},
-  "_meta": {
-    "columns": {},
-    "schemas": {},
-    "tables": {}
-  }
 }
