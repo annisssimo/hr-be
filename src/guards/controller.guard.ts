@@ -10,8 +10,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { ZodSchema, ZodError } from 'zod';
 import { JWTService } from '../modules/shared/jwt/jwt.service';
-import { UsersService } from '../modules/shared/users/users.service';
-import { PROVIDERS, USER_STATUS } from '../constants/index';
+import { PROVIDERS, USER_STATUS, USER_ROLE } from '../constants/index';
 import { users } from '../modules/shared/database/models';
 import { eq } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
@@ -21,7 +20,6 @@ export class ControllerGuard implements CanActivate {
     constructor(
         private reflector: Reflector,
         private jwtService: JWTService,
-        private usersService: UsersService,
         @Inject(PROVIDERS.DRIZZLE) private readonly drizzle: NodePgDatabase,
     ) {}
 
@@ -58,15 +56,21 @@ export class ControllerGuard implements CanActivate {
                 throw new UnauthorizedException('No authorization header provided');
             }
 
-            const [, token] = authHeader.split(' ');
+            const token = authHeader.split(' ')[1];
             if (!token) {
                 throw new UnauthorizedException('Token not found');
             }
 
             try {
-                request.user = await this.jwtService.verify(token);
+                const payload = await this.jwtService.verify(token);
+                const [user] = await this.drizzle
+                    .select()
+                    .from(users)
+                    .where(eq(users.id, payload.id));
+                const res = context.switchToHttp().getResponse();
+                res.locals.user = user;
             } catch (_error) {
-                throw new UnauthorizedException('Invalid token');
+                throw new UnauthorizedException(`Problem occurred: ${_error.message}`);
             }
         }
 
@@ -85,6 +89,20 @@ export class ControllerGuard implements CanActivate {
             }
             if (user.status !== USER_STATUS.ACTIVE) {
                 throw new ForbiddenException('Access denied');
+            }
+        }
+
+        const allowedRoles =
+            this.reflector.get<USER_ROLE[]>('allowedRoles', context.getClass()) ||
+            this.reflector.get<boolean>('allowedRoles', context.getHandler());
+        if (allowedRoles && allowedRoles.length > 0) {
+            const res = context.switchToHttp().getResponse();
+            const user = res.locals.user;
+            if (!user || !user.role) {
+                throw new UnauthorizedException('User role not found');
+            }
+            if (!allowedRoles.includes(user.role)) {
+                throw new ForbiddenException('User does not have the required role');
             }
         }
 
