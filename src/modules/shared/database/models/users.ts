@@ -2,7 +2,7 @@ import { date, pgSchema, uuid, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 import { settings } from '../../../../../config/settings';
-import { USER_STATUS, USER_ROLE } from '../../../../constants';
+import { USER_STATUS, USER_ROLE, USER_POSITION } from '../../../../constants';
 
 export const careerDaySchema = pgSchema(settings.DATABASE.schema);
 
@@ -25,6 +25,15 @@ export const users = careerDaySchema.table('users', {
         enum: [USER_ROLE.ADMIN, USER_ROLE.EMPLOYEE, USER_ROLE.MANAGER],
     }),
     statusAssignmentDate: date('status_assignment_date'),
+
+    position: varchar('position', {
+        enum: Object.values(USER_POSITION) as [string, ...string[]],
+    }),
+    startDay: date('start_day'),
+    endDate: date('end_date'),
+    dateOfBirth: date('date_of_birth'),
+    phoneNumber: varchar('phone_number', { length: 20 }),
+    contactUsername: varchar('contact_username', { length: 255 }),
 });
 
 export const usersRelations = relations(users, ({ one }) => ({

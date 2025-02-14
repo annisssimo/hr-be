@@ -4,7 +4,7 @@ import { SQL, inArray, ilike, or, and, asc, desc, count } from 'drizzle-orm';
 
 import { UsersService } from './users.service';
 import { USER_ROLE, SORT_OPTION, PROVIDERS } from '../../../constants';
-import { UsersListParams } from '../../endpoints/usersList/usersList.schema';
+import { UsersListParams } from '../../endpoints/usersList/users-list.schema';
 import { users } from '../database/models/users';
 
 @Injectable()

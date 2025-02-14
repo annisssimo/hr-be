@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
-import { DbConnectionGuard } from './guards/dbConnection.guard';
+import { DbConnectionGuard } from './guards/db-connection.guard';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);

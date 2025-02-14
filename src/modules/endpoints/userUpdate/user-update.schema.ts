@@ -10,6 +10,12 @@ export const UpdateSchema = z.object({
     avatar: z.string().max(255).optional(),
     status: z.enum([USER_STATUS.ACTIVE, USER_STATUS.PENDING, USER_STATUS.ARCHIVED]).optional(),
     role: z.enum([USER_ROLE.ADMIN, USER_ROLE.EMPLOYEE, USER_ROLE.MANAGER]).optional(),
+    position: z.string().max(255).optional(),
+    startDay: z.string().optional(),
+    endDate: z.string().optional(),
+    dateOfBirth: z.string().optional(),
+    phoneNumber: z.string().max(255).optional(),
+    contactUsername: z.string().max(255).optional(),
 });
 
 export type UpdateInputParams = z.infer<typeof UpdateSchema>;

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { CloudinaryService } from './cloudinary.service';
 import { DrizzleService } from './drizzle.service';
 import { DrizzleProvider } from './drizzle.provider';
-import { DbConnectionGuard } from '../../../../guards/dbConnection.guard';
+import { DbConnectionGuard } from '../../../../guards/db-connection.guard';
 
 @Module({
     providers: [CloudinaryService, DrizzleProvider, DrizzleService, DbConnectionGuard],

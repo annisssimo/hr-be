@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { USER_STATUS } from '../../../src/constants';
-import { setupTestApp } from '../../utils/setupTestApp';
+import { setupTestApp } from '../../utils/setup-test-app';
 import { Api } from '../../utils/api';
 import { Factory } from '../../utils/factories';
 

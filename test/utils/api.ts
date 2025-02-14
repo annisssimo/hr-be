@@ -2,8 +2,8 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
 import { RegisterInputParams } from '../../src/modules/endpoints/auth/register/register.schema';
-import { UsersListParams } from '../../src/modules/endpoints/usersList/usersList.schema';
-import { UpdateInputParams } from '../../src/modules/endpoints/userUpdate/userUpdate.schema';
+import { UpdateInputParams } from '../../src/modules/endpoints/userUpdate/user-update.schema';
+import { UsersListParams } from '../../src/modules/endpoints/usersList/users-list.schema';
 
 export class Api {
     constructor(private readonly app: INestApplication) {}

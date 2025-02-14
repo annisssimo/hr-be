@@ -5,8 +5,8 @@ import { RegisterController } from './auth/register/register.controller';
 import { ProvidersModule } from '../shared/database/providers/providers.module';
 import { JWTModule } from '../shared/jwt/jwt.module';
 import { LoginController } from './auth/login/login.controller';
-import { UsersListController } from './usersList/usersList.controller';
-import { UserUpdateController } from './userUpdate/userUpdate.controller';
+import { UserUpdateController } from './userUpdate/user-update.controller';
+import { UsersListController } from './usersList/users-list.controller';
 
 @Module({
     imports: [UsersModule, ProvidersModule, JWTModule],

@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 import { User, users } from '../database/models';
 import { PROVIDERS } from '../../../constants';
 import { RegisterInputParams } from '../../endpoints/auth/register/register.schema';
-import { UpdateInputParams } from '../../endpoints/userUpdate/userUpdate.schema';
+import { UpdateInputParams } from '../../endpoints/userUpdate/user-update.schema';
 
 @Injectable()
 export class UsersService {

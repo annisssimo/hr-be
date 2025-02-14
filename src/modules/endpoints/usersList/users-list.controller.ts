@@ -1,8 +1,8 @@
 import { Controller, Post, Body, UsePipes, HttpCode } from '@nestjs/common';
 
 import { ZodValidationPipe } from '../../validation/validation.pipe';
-import { UsersListSchema, UsersListParams } from './usersList.schema';
-import { UsersReadService } from '../../shared/users/usersRead.service';
+import { UsersListSchema, UsersListParams } from './users-list.schema';
+import { UsersReadService } from '../../shared/users/users-read.service';
 @Controller('v1/users/list')
 @UsePipes(new ZodValidationPipe(UsersListSchema))
 export class UsersListController {

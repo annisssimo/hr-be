@@ -19,3 +19,20 @@ export const enum SORT_OPTION {
     ASC = 'asc',
     DESC = 'desc',
 }
+
+export enum USER_POSITION {
+    HR = 'hr',
+    FRONTEND = 'frontendDev',
+    BACKEND = 'backendDev',
+    DEVOPS = 'devOps',
+    MOBILE = 'mobileDev',
+    ASSISTANT = 'assistant',
+    PM = 'pm',
+    CEO = 'ceo',
+    CTO = 'cto',
+    RECRUITER = 'recruiter',
+    QA = 'qa',
+    TEAM_LEAD = 'teamLead',
+    DESIGNER = 'designer',
+    SALES = 'sales',
+}

@@ -14,7 +14,7 @@ import {
 import { Controller } from '../../../decorators/controller.decorator';
 import { UsersService } from '../../shared/users/users.service';
 import { ControllerGuard } from '../../../guards/controller.guard';
-import { UpdateSchema } from './userUpdate.schema';
+import { UpdateSchema } from './user-update.schema';
 import { ZodError } from 'zod';
 import { users } from '../../shared/database/models';
 import { eq } from 'drizzle-orm';
@@ -22,6 +22,7 @@ import { PROVIDERS, USER_ROLE } from '../../../constants';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { JWTService } from '../../shared/jwt/jwt.service';
 import { Request } from 'express';
+import { ERROR_MESSAGES } from '../../../constants/error-messages';
 
 @UseGuards(ControllerGuard)
 @Controller('v1/users', {
@@ -34,12 +35,13 @@ export class UserUpdateController {
         @Inject(PROVIDERS.DRIZZLE) private readonly drizzle: NodePgDatabase,
         private readonly jwtService: JWTService,
     ) {}
+
     @HttpCode(HttpStatus.OK)
     @Put(':userId')
     public async updateUser(@Param('userId') userId: string, @Req() request: Request) {
         const authHeader = request.headers.authorization;
         if (!authHeader) {
-            throw new UnauthorizedException('No authorization header provided');
+            throw new UnauthorizedException(ERROR_MESSAGES.UNAUTHORIZED);
         }
         const [, token] = authHeader.split(' ');
         const payload = await this.jwtService.verify(token);
@@ -49,16 +51,16 @@ export class UserUpdateController {
             .where(eq(users.id, payload.id));
         if (request.body.role || request.body.status) {
             if (userRole.role !== USER_ROLE.ADMIN) {
-                throw new ForbiddenException('You do not have permission to do this');
+                throw new ForbiddenException(ERROR_MESSAGES.NO_PERMISSION);
             }
         }
         if (request.body.managerId) {
             if (userRole.role === USER_ROLE.EMPLOYEE) {
-                throw new ForbiddenException('You do not have permission to do this');
+                throw new ForbiddenException(ERROR_MESSAGES.NO_PERMISSION);
             }
         }
         if (userRole.role === USER_ROLE.EMPLOYEE && payload.id != userId) {
-            throw new ForbiddenException('You do not have permission to do this');
+            throw new ForbiddenException(ERROR_MESSAGES.NO_PERMISSION);
         }
         try {
             return this.usersService.update(userId, request.body);
@@ -66,7 +68,7 @@ export class UserUpdateController {
             if (error instanceof ZodError) {
                 throw new BadRequestException(error.message);
             } else {
-                throw new InternalServerErrorException('Internal server error');
+                throw new InternalServerErrorException(ERROR_MESSAGES.SERVER_ERROR);
             }
         }
     }

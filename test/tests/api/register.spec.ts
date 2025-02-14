@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 
 import { users } from '../../../src/modules/shared/database/models';
-import { setupTestApp } from '../../utils/setupTestApp';
+import { setupTestApp } from '../../utils/setup-test-app';
 import { Api } from '../../utils/api';
 import { Factory } from '../../utils/factories';
 

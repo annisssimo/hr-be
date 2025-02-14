@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { faker } from '@faker-js/faker/.';
 
-import { setupTestApp } from '../../utils/setupTestApp';
+import { setupTestApp } from '../../utils/setup-test-app';
 import { USER_ROLE, USER_STATUS } from '../../../src/constants';
 import { Api } from '../../utils/api';
 import { Factory } from '../../utils/factories';
