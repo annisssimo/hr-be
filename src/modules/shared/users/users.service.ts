@@ -4,7 +4,7 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
 
 import { User, users } from '../database/models';
-import { PROVIDERS } from '../../../constants';
+import { ERROR_MESSAGES, PROVIDERS } from '../../../constants';
 import { RegisterInputParams } from '../../endpoints/auth/register/register.schema';
 import { UpdateInputParams } from '../../endpoints/userUpdate/user-update.schema';
 
@@ -21,11 +21,15 @@ export class UsersService {
                 .returning()) as User[];
             return resultingUser;
         } catch (error) {
-            throw new InternalServerErrorException('Unexpected error - ' + error.message);
+            throw new InternalServerErrorException(ERROR_MESSAGES.SERVER_ERROR + error.message);
         }
     }
 
     public async update(userId: string, updateData: Partial<UpdateInputParams>): Promise<User> {
+        if (updateData.password) {
+            updateData.password = await hash(updateData.password, 8);
+        }
+
         const [updatedUser] = (await this.drizzle
             .update(users)
             .set(updateData)

@@ -4,6 +4,7 @@ import request from 'supertest';
 import { RegisterInputParams } from '../../src/modules/endpoints/auth/register/register.schema';
 import { UpdateInputParams } from '../../src/modules/endpoints/userUpdate/user-update.schema';
 import { UsersListParams } from '../../src/modules/endpoints/usersList/users-list.schema';
+import { ChangePasswordInputParams } from '../../src/modules/endpoints/profile/changePassword/changePassword.schema';
 
 export class Api {
     constructor(private readonly app: INestApplication) {}
@@ -18,6 +19,8 @@ export class Api {
                 request(this.app.getHttpServer()).post('/v1/users/list').send(params),
             updateUser: (userId: string, data: UpdateInputParams) =>
                 request(this.app.getHttpServer()).put(`/v1/users/${userId}`).send(data),
+            changePassword: (data: ChangePasswordInputParams) =>
+                request(this.app.getHttpServer()).put('/v1/profile/change-password').send(data),
         };
     }
 }

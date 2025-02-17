@@ -7,7 +7,7 @@ import { Api } from '../../utils/api';
 import { Factory } from '../../utils/factories';
 import { User } from '../../../src/modules/shared/database/models';
 
-describe('[POST] /v1/users/list', () => {
+describe('[POST] api/v1/users/list', () => {
     let app: INestApplication;
     let api: Api;
     let factory: Factory;

@@ -7,9 +7,15 @@ import { JWTModule } from '../shared/jwt/jwt.module';
 import { LoginController } from './auth/login/login.controller';
 import { UserUpdateController } from './userUpdate/user-update.controller';
 import { UsersListController } from './usersList/users-list.controller';
-
+import { ChangePasswordController } from './profile/changePassword/changePassword.controller';
 @Module({
     imports: [UsersModule, ProvidersModule, JWTModule],
-    controllers: [RegisterController, LoginController, UsersListController, UserUpdateController],
+    controllers: [
+        RegisterController,
+        LoginController,
+        UsersListController,
+        UserUpdateController,
+        ChangePasswordController,
+    ],
 })
 export class EndpointsModule {}

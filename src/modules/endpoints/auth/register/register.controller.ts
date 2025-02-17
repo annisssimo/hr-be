@@ -11,7 +11,7 @@ import {
 import { Controller } from '../../../../decorators/controller.decorator';
 import { Response } from 'express';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { PROVIDERS } from '../../../../constants';
+import { ERROR_MESSAGES, PROVIDERS } from '../../../../constants';
 import { users } from '../../../shared/database/models/users';
 import { UsersService } from '../../../shared/users/users.service';
 import { RegisterSchema, RegisterInputParams } from './register.schema';
@@ -33,11 +33,11 @@ export class RegisterController {
             .where(eq(users.email, body.email));
 
         if (existingUser) {
-            throw new ConflictException('Email is already in use');
+            throw new ConflictException(ERROR_MESSAGES.EMAIL_IN_USE);
         }
         const result = await this.usersService.createUser(body);
         if (!result) {
-            throw new InternalServerErrorException('User already exists');
+            throw new InternalServerErrorException(ERROR_MESSAGES.USER_ALREADY_EXISTS);
         }
         return res.status(204).send();
     }

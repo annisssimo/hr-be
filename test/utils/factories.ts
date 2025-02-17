@@ -4,10 +4,9 @@ import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { hash } from 'bcryptjs';
 
-import { PROVIDERS, USER_ROLE, USER_STATUS } from '../../src/constants';
+import { ERROR_MESSAGES, PROVIDERS, USER_ROLE, USER_STATUS } from '../../src/constants';
 import { User, users } from '../../src/modules/shared/database/models';
 import { Api } from './api';
-import { ERROR_MESSAGES } from '../../src/constants/error-messages';
 
 @Injectable()
 export class Factory {

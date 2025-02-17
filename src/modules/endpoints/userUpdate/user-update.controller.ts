@@ -18,11 +18,10 @@ import { UpdateSchema } from './user-update.schema';
 import { ZodError } from 'zod';
 import { users } from '../../shared/database/models';
 import { eq } from 'drizzle-orm';
-import { PROVIDERS, USER_ROLE } from '../../../constants';
+import { ERROR_MESSAGES, PROVIDERS, USER_ROLE } from '../../../constants';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { JWTService } from '../../shared/jwt/jwt.service';
 import { Request } from 'express';
-import { ERROR_MESSAGES } from '../../../constants/error-messages';
 
 @UseGuards(ControllerGuard)
 @Controller('v1/users', {
