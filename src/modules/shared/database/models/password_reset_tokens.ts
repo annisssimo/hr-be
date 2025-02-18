@@ -1,9 +1,6 @@
-import { pgSchema, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
-import { users } from './users';
-import { settings } from '../../../../../config/settings';
-
-export const careerDaySchema = pgSchema(settings.DATABASE.schema);
+import { careerDaySchema, users } from './users';
 
 export const passwordResetTokens = careerDaySchema.table('password_reset_tokens', {
     id: uuid('id').primaryKey().defaultRandom(),
