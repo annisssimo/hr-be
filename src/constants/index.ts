@@ -36,6 +36,7 @@ export enum USER_POSITION {
     DESIGNER = 'designer',
     SALES = 'sales',
 }
+
 export const HTTP_CODES = {
     OK: 200,
     CREATED: 201,
@@ -56,12 +57,15 @@ export const HTTP_CODES = {
 
 export const ERROR_MESSAGES = {
     USER_ALREADY_EXISTS: 'User with this email already exists',
-    USER_NOT_FOUND: 'User not found',
+    USER_NOT_FOUND: 'Account with this email not found',
     EMAIL_IN_USE: 'Email is already in use',
-    PASSWORD_UPDATE_FAILED: 'Failed to update password',
     INVALID_OLD_PASSWORD: 'Old password is invalid',
     SAME_PASSWORD: "New password shouldn't be equal to old password",
     NO_PERMISSION: 'You do not have permission to do this',
     SERVER_ERROR: 'Internal server error',
     UNAUTHORIZED: 'No authorization header provided',
+    TOKEN_INVALID: 'The provided token is invalid',
+    PASSWORD_RESET_FAILED: 'Failed to reset password',
+    PASSWORD_UPDATE_FAILED: 'Failed to update password',
+    EMAIL_NOT_VERIFIED: 'Email is not verified',
 };

@@ -6,6 +6,7 @@ import { users } from '../../../src/modules/shared/database/models';
 import { setupTestApp } from '../../utils/setup-test-app';
 import { Api } from '../../utils/api';
 import { Factory } from '../../utils/factories';
+import { HTTP_CODES } from '../../../src/constants';
 
 describe('[POST] api/v1/auth/register', () => {
     let app: INestApplication;
@@ -25,7 +26,7 @@ describe('[POST] api/v1/auth/register', () => {
         const payload = await factory.userPayload();
         const result = await api.request.register(payload);
 
-        expect(result.status).toBe(204);
+        expect(result.status).toBe(HTTP_CODES.NO_CONTENT);
 
         const [createdUser] = await db.select().from(users).where(eq(users.email, payload.email));
         expect(createdUser).toBeDefined();
@@ -36,13 +37,13 @@ describe('[POST] api/v1/auth/register', () => {
         await api.request.register(payload);
         const response = await api.request.register(payload);
 
-        expect(response.status).toBe(409);
+        expect(response.status).toBe(HTTP_CODES.CONFLICT);
     });
 
     it('should fail when provided invalid data', async () => {
         const payload = await factory.userPayload({ email: 'invalid-email', password: 'short' });
         const response = await api.request.register(payload);
 
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(HTTP_CODES.BAD_REQUEST);
     });
 });

@@ -1,5 +1,5 @@
 {
-    "id": "6e1db689-7bc6-4bde-bf54-7c31b2c6247c",
+    "id": "c2c3ed4e-787c-4f54-a1a1-1a515bd465aa",
     "prevId": "bb83f03a-928b-481c-9a90-bb4aa2f5bb86",
     "version": "7",
     "dialect": "postgresql",
@@ -69,42 +69,6 @@
                     "type": "date",
                     "primaryKey": false,
                     "notNull": false
-                },
-                "position": {
-                    "name": "position",
-                    "type": "varchar",
-                    "primaryKey": false,
-                    "notNull": false
-                },
-                "start_day": {
-                    "name": "start_day",
-                    "type": "date",
-                    "primaryKey": false,
-                    "notNull": false
-                },
-                "end_date": {
-                    "name": "end_date",
-                    "type": "date",
-                    "primaryKey": false,
-                    "notNull": false
-                },
-                "date_of_birth": {
-                    "name": "date_of_birth",
-                    "type": "date",
-                    "primaryKey": false,
-                    "notNull": false
-                },
-                "phone_number": {
-                    "name": "phone_number",
-                    "type": "varchar(20)",
-                    "primaryKey": false,
-                    "notNull": false
-                },
-                "contact_username": {
-                    "name": "contact_username",
-                    "type": "varchar(255)",
-                    "primaryKey": false,
-                    "notNull": false
                 }
             },
             "indexes": {},
@@ -128,6 +92,55 @@
                     "columns": ["email"]
                 }
             },
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.password_reset_tokens": {
+            "name": "password_reset_tokens",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "token": {
+                    "name": "token",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "expires_at": {
+                    "name": "expires_at",
+                    "type": "timestamp",
+                    "primaryKey": false,
+                    "notNull": true
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "password_reset_tokens_user_id_users_id_fk": {
+                    "name": "password_reset_tokens_user_id_users_id_fk",
+                    "tableFrom": "password_reset_tokens",
+                    "tableTo": "users",
+                    "schemaTo": "career_day",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
             "policies": {},
             "checkConstraints": {},
             "isRLSEnabled": false

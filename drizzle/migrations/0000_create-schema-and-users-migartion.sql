@@ -1,6 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS "career_day";
 --> statement-breakpoint
-CREATE TABLE "career_day"."users" (
+CREATE TABLE IF NOT EXISTS "career_day"."users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"first_name" varchar(255) NOT NULL,
 	"last_name" varchar(255) NOT NULL,

@@ -3,17 +3,15 @@ import { faker } from '@faker-js/faker';
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { hash } from 'bcryptjs';
+import { randomUUID } from 'crypto';
+import dayjs from 'dayjs';
 
 import { ERROR_MESSAGES, PROVIDERS, USER_ROLE, USER_STATUS } from '../../src/constants';
-import { User, users } from '../../src/modules/shared/database/models';
-import { Api } from './api';
+import { passwordResetTokens, User, users } from '../../src/modules/shared/database/models';
 
 @Injectable()
 export class Factory {
-    constructor(
-        @Inject(PROVIDERS.DRIZZLE) private readonly drizzle: NodePgDatabase,
-        private readonly api: Api,
-    ) {}
+    constructor(@Inject(PROVIDERS.DRIZZLE) private readonly drizzle: NodePgDatabase) {}
 
     public async userPayload(overrides: Partial<User> = {}) {
         return {
@@ -52,6 +50,30 @@ export class Factory {
 
         return {
             result: user[0],
+            payload,
+            dependencies: {},
+        };
+    }
+
+    public tokenPayload(userId: string) {
+        const token = randomUUID();
+        const expiresAt = dayjs().add(30, 'minute').toDate();
+
+        return {
+            id: randomUUID(),
+            userId,
+            token,
+            expiresAt,
+        };
+    }
+
+    public async token(userId: string) {
+        const payload = this.tokenPayload(userId);
+
+        const token = await this.drizzle.insert(passwordResetTokens).values(payload).returning();
+
+        return {
+            result: token[0],
             payload,
             dependencies: {},
         };

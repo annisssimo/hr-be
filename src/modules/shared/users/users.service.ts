@@ -1,7 +1,7 @@
 import { hash } from 'bcryptjs';
-import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
 
 import { User, users } from '../database/models';
 import { ERROR_MESSAGES, PROVIDERS } from '../../../constants';
