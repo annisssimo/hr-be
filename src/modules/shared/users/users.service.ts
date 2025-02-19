@@ -35,7 +35,6 @@ export class UsersService {
             .set(updateData)
             .where(eq(users.id, userId))
             .returning()) as User[];
-
         return updatedUser;
     }
 }

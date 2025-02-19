@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 
 import { Api } from '../../utils/api';
 import { Factory } from '../../utils/factories';
-import { setupTestApp } from '../../utils/setupTestApp';
+import { setupTestApp } from '../../utils/setup-test-app';
 import { HTTP_CODES, ERROR_MESSAGES } from '../../../src/constants';
 
 describe('[POST] /v1/auth/password-reset/reset', () => {

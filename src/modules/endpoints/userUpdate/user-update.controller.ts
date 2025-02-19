@@ -1,13 +1,10 @@
 import {
-    BadRequestException,
     ForbiddenException,
-    HttpCode,
     HttpStatus,
-    Inject,
-    InternalServerErrorException,
     Param,
     Put,
     Req,
+    Res,
     UnauthorizedException,
     UseGuards,
 } from '@nestjs/common';
@@ -15,13 +12,10 @@ import { Controller } from '../../../decorators/controller.decorator';
 import { UsersService } from '../../shared/users/users.service';
 import { ControllerGuard } from '../../../guards/controller.guard';
 import { UpdateSchema } from './user-update.schema';
-import { ZodError } from 'zod';
-import { users } from '../../shared/database/models';
-import { eq } from 'drizzle-orm';
-import { ERROR_MESSAGES, PROVIDERS, USER_ROLE } from '../../../constants';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { JWTService } from '../../shared/jwt/jwt.service';
-import { Request } from 'express';
+import { ERROR_MESSAGES, USER_ROLE } from '../../../constants';
+import { Request, Response } from 'express';
+import { CloudinaryService } from '../../shared/database/providers/cloudinary.service';
+import { settings } from '../../../../config/settings';
 
 @UseGuards(ControllerGuard)
 @Controller('v1/users', {
@@ -31,44 +25,65 @@ import { Request } from 'express';
 export class UserUpdateController {
     constructor(
         private readonly usersService: UsersService,
-        @Inject(PROVIDERS.DRIZZLE) private readonly drizzle: NodePgDatabase,
-        private readonly jwtService: JWTService,
+        private readonly cloudinaryService: CloudinaryService,
     ) {}
 
-    @HttpCode(HttpStatus.OK)
     @Put(':userId')
-    public async updateUser(@Param('userId') userId: string, @Req() request: Request) {
+    public async updateUser(
+        @Param('userId') userId: string,
+        @Req() request: Request,
+        @Res() response: Response,
+    ) {
         const authHeader = request.headers.authorization;
         if (!authHeader) {
             throw new UnauthorizedException(ERROR_MESSAGES.UNAUTHORIZED);
         }
-        const [, token] = authHeader.split(' ');
-        const payload = await this.jwtService.verify(token);
-        const [userRole] = await this.drizzle
-            .select({ role: users.role })
-            .from(users)
-            .where(eq(users.id, payload.id));
+        const user = response.locals.user;
         if (request.body.role || request.body.status) {
-            if (userRole.role !== USER_ROLE.ADMIN) {
+            if (user.role !== USER_ROLE.ADMIN) {
                 throw new ForbiddenException(ERROR_MESSAGES.NO_PERMISSION);
             }
         }
         if (request.body.managerId) {
-            if (userRole.role === USER_ROLE.EMPLOYEE) {
-                throw new ForbiddenException(ERROR_MESSAGES.NO_PERMISSION);
+            if (user.role === USER_ROLE.EMPLOYEE) {
+                throw new ForbiddenException('You do not have permission to do this');
             }
         }
-        if (userRole.role === USER_ROLE.EMPLOYEE && payload.id != userId) {
+        if (user.role === USER_ROLE.EMPLOYEE && user.id != userId) {
             throw new ForbiddenException(ERROR_MESSAGES.NO_PERMISSION);
         }
-        try {
-            return this.usersService.update(userId, request.body);
-        } catch (error) {
-            if (error instanceof ZodError) {
-                throw new BadRequestException(error.message);
-            } else {
-                throw new InternalServerErrorException(ERROR_MESSAGES.SERVER_ERROR);
+        const requestData = request.body;
+        if (requestData.hasOwnProperty('avatar') && requestData.avatar === null) {
+            if (user.avatar) {
+                const avatarUrl = user.avatar;
+                const publicId = avatarUrl.substring(avatarUrl.lastIndexOf('/') + 1);
+                await this.cloudinaryService.deleteImage(
+                    publicId,
+                    settings.CLOUDINARY.avatarFolder || '',
+                );
             }
+            requestData.avatar = null;
+        } else if (requestData.avatar) {
+            if (user.avatar) {
+                const avatarUrl = user.avatar;
+                const publicId = avatarUrl.substring(avatarUrl.lastIndexOf('/') + 1);
+                await this.cloudinaryService.deleteImage(
+                    publicId,
+                    settings.CLOUDINARY.avatarFolder || '',
+                );
+            }
+            const uploadResponse = await this.cloudinaryService.uploadImage(
+                requestData.avatar,
+                userId,
+                settings.CLOUDINARY.avatarFolder || '',
+            );
+            requestData.avatar = uploadResponse.secure_url;
         }
+        const {
+            id: _id,
+            password: _password,
+            ...result
+        } = await this.usersService.update(userId, requestData);
+        return response.status(HttpStatus.OK).json({ ...result });
     }
 }

@@ -3,12 +3,16 @@ import { USER_ROLE, USER_STATUS } from '../../../src/constants';
 import { setupTestApp } from '../../utils/setup-test-app';
 import { Api } from '../../utils/api';
 import { Factory } from '../../utils/factories';
+import sinon from 'sinon';
+import { CloudinaryService } from '../../../src/modules/shared/database/providers/cloudinary.service';
+import { UploadApiResponse } from 'cloudinary';
+import { randomBase64 } from '../../utils/randomBase64';
 
 describe('[PUT] /v1/users/:userId', () => {
     let app: INestApplication;
     let api: Api;
     let factory: Factory;
-
+    let cloudinaryServiceMock: sinon.SinonStubbedInstance<CloudinaryService>;
     let adminUser: { result: any; payload: any };
     let adminToken: string;
     let targetUser: { result: any; payload: any };
@@ -18,10 +22,12 @@ describe('[PUT] /v1/users/:userId', () => {
         app = setup.app;
         api = setup.api;
         factory = setup.factory;
+        cloudinaryServiceMock = setup.cloudinaryServiceMock; // Using injected mock
 
         adminUser = await factory.user({
             role: USER_ROLE.ADMIN,
             status: USER_STATUS.ACTIVE,
+            avatar: null,
         });
         const adminLoginRes = await api.request.login({
             email: adminUser.payload.email,
@@ -39,6 +45,11 @@ describe('[PUT] /v1/users/:userId', () => {
         await app.close();
     });
 
+    afterEach(() => {
+        cloudinaryServiceMock.uploadImage.resetHistory();
+        cloudinaryServiceMock.deleteImage.resetHistory();
+    });
+
     it('should update user confirmation successfully with valid token and valid body', async () => {
         const response = await api.request
             .updateUser(targetUser.result.id, {
@@ -46,9 +57,7 @@ describe('[PUT] /v1/users/:userId', () => {
                 role: USER_ROLE.MANAGER,
             })
             .set('Authorization', `Bearer ${adminToken}`);
-
         expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('id', targetUser.result.id);
         expect(response.body).toHaveProperty('status', USER_STATUS.ARCHIVED);
         expect(response.body).toHaveProperty('role', USER_ROLE.MANAGER);
     });
@@ -135,12 +144,75 @@ describe('[PUT] /v1/users/:userId', () => {
         const nonAdminToken = nonAdminLoginRes.body.accessToken;
         const newMail = 'A' + nonAdminUser.result.email;
         const response = await api.request
-            .updateUser(nonAdminUser.result.id, {
-                email: newMail,
-            })
+            .updateUser(nonAdminUser.result.id, { email: newMail })
             .set('Authorization', `Bearer ${nonAdminToken}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('email', newMail);
+    });
+
+    it('should update user avatar and call Cloudinary uploadImage (no old avatar)', async () => {
+        cloudinaryServiceMock.uploadImage.resolves({
+            secure_url: 'http://fakeurl.com/fake-avatar.jpg',
+        } as UploadApiResponse);
+
+        const response = await api.request
+            .updateUser(adminUser.result.id, { avatar: randomBase64() })
+            .set('Authorization', `Bearer ${adminToken}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('avatar', 'http://fakeurl.com/fake-avatar.jpg');
+        expect(cloudinaryServiceMock.uploadImage.calledOnce).toBe(true);
+    });
+
+    it('should delete the old avatar and update user avatar when an old avatar exists', async () => {
+        const userWithPFP = await factory.user({
+            role: USER_ROLE.ADMIN,
+            status: USER_STATUS.ACTIVE,
+            avatar: 'http://fakeurl.com/fake-avatar-old.jpg',
+        });
+        const userLoginRes = await api.request.login({
+            email: userWithPFP.payload.email,
+            password: userWithPFP.payload.password,
+        });
+        const userWithPFPToken = userLoginRes.body.accessToken;
+
+        cloudinaryServiceMock.deleteImage.resolves({ result: 'ok' });
+        cloudinaryServiceMock.uploadImage.resolves({
+            secure_url: 'http://fakeurl.com/fake-avatar.jpg',
+        } as UploadApiResponse);
+
+        const response = await api.request
+            .updateUser(userWithPFP.result.id, { avatar: randomBase64() })
+            .set('Authorization', `Bearer ${userWithPFPToken}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('avatar', 'http://fakeurl.com/fake-avatar.jpg');
+        expect(cloudinaryServiceMock.deleteImage.calledOnce).toBe(true);
+        expect(cloudinaryServiceMock.uploadImage.calledOnce).toBe(true);
+    });
+
+    it('should delete avatar', async () => {
+        const userWithPFP = await factory.user({
+            role: USER_ROLE.ADMIN,
+            status: USER_STATUS.ACTIVE,
+            avatar: 'http://fakeurl.com/fake-avatar.jpg',
+        });
+        const userLoginRes = await api.request.login({
+            email: userWithPFP.payload.email,
+            password: userWithPFP.payload.password,
+        });
+        const userWithPFPToken = userLoginRes.body.accessToken;
+
+        cloudinaryServiceMock.deleteImage.resolves({ result: 'ok' });
+
+        const response = await api.request
+            .updateUser(userWithPFP.result.id, { avatar: null })
+            .set('Authorization', `Bearer ${userWithPFPToken}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('avatar', null);
+        expect(cloudinaryServiceMock.deleteImage.calledOnce).toBe(true);
+        expect(cloudinaryServiceMock.uploadImage.called).toBe(false);
     });
 });

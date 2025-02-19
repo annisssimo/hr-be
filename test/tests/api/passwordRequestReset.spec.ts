@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 
 import { Api } from '../../utils/api';
 import { Factory } from '../../utils/factories';
-import { setupTestApp } from '../../utils/setupTestApp';
+import { setupTestApp } from '../../utils/setup-test-app';
 import { MailService } from '../../../src/modules/shared/passwordReset/mail.service';
 import { HTTP_CODES } from '../../../src/constants';
 

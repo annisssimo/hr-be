@@ -11,6 +11,7 @@ export const settings = {
         cloudName: process.env.CLOUD_NAME,
         apiKey: process.env.CLOUDINARY_API_KEY,
         apiSecret: process.env.CLOUDINARY_API_SECRET,
+        avatarFolder: process.env.AVATAR_FOLDER,
     },
     JWT: {
         secret: process.env.JWT_SECRET,

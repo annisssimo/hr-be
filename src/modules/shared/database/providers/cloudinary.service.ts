@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 
 import { settings } from '../../../../../config/settings';
@@ -11,15 +11,26 @@ export class CloudinaryService {
 
     public async uploadImage(url: string, publicId: string, folder: string) {
         try {
-            const uploadImage = await cloudinary.uploader.upload(url, {
+            const uploadedImage = await cloudinary.uploader.upload(url, {
                 public_id: publicId,
                 folder: folder,
             });
-            return uploadImage;
+            return uploadedImage;
         } catch (error) {
             console.error('Error uploading image', error);
             throw new Error('Image upload failed');
         }
+    }
+
+    public async deleteImage(publicId: string, folder: string) {
+        const result = await cloudinary.uploader.destroy(`${folder}/${publicId}`);
+        if (result.result != 'ok') {
+            if (result.result == 'not found') {
+                throw new NotFoundException(result.result);
+            }
+            throw new InternalServerErrorException(result.result);
+        }
+        return result;
     }
 
     private cloudinarySetUp() {

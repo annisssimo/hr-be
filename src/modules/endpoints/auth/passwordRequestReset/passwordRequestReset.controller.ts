@@ -32,16 +32,15 @@ export class PasswordRequestResetController {
 
     @Post('request')
     public async requestReset(@Body() body: PasswordRequestResetParams) {
-        const user = await this.db.select().from(users).where(eq(users.email, body.email)).limit(1);
-
-        if (!user.length) {
-            throw new HttpException(ERROR_MESSAGES.USER_NOT_FOUND, HTTP_CODES.NOT_FOUND);
-        }
+        const [user] = (await this.db
+            .select()
+            .from(users)
+            .where(eq(users.email, body.email))) as User[];
 
         try {
-            const token = await this.passwordResetService.generateResetToken(user[0].id);
+            const token = await this.passwordResetService.generateResetToken(user.id);
             const resetLink = this.generateResetLink(token);
-            await this.sendPasswordResetEmail(user[0], resetLink);
+            await this.sendPasswordResetEmail(user, resetLink);
         } catch (error) {
             console.error(ERROR_MESSAGES.PASSWORD_RESET_FAILED, error);
             throw new HttpException(ERROR_MESSAGES.SERVER_ERROR, HTTP_CODES.INTERNAL_SERVER_ERROR);
