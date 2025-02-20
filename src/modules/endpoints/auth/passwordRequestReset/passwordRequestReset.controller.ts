@@ -52,10 +52,8 @@ export class PasswordRequestResetController {
     }
 
     private async sendPasswordResetEmail(user: User, resetLink: string): Promise<void> {
-        const logoPath = `${process.env.BACKEND_PROD_BASE_URL}/assets/SunmaitLogo.svg`;
         const emailContent = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333333; line-height: 1.5; text-align: center;">
-                <img src="${logoPath}" alt="Sunmait Logo" width="150" height="50" style="display: block; margin: 0 auto 20px;" />
                 <h1 style="color: #004DD7; font-size: 24px; margin-bottom: 20px;">Hello, ${user.firstName} ${user.lastName}</h1>
                 <p>We have received a request to change a password to your account.</p>
                 <p>Click the button below to change your password:</p>
