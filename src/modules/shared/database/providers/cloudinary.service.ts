@@ -26,7 +26,7 @@ export class CloudinaryService {
         const result = await cloudinary.uploader.destroy(`${folder}/${publicId}`);
         if (result.result != 'ok') {
             if (result.result == 'not found') {
-                throw new NotFoundException(result.result);
+                throw new NotFoundException(`Image: ${folder}/${publicId} not found`);
             }
             throw new InternalServerErrorException(result.result);
         }

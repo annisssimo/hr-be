@@ -32,7 +32,6 @@ export class UsersReadService {
             .orderBy(...order)
             .limit(limit ?? 10)
             .offset(offset ?? 0);
-
         return {
             data: usersList,
             metadata: {

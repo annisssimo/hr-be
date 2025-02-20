@@ -56,7 +56,8 @@ export class UserUpdateController {
         if (requestData.hasOwnProperty('avatar') && requestData.avatar === null) {
             if (user.avatar) {
                 const avatarUrl = user.avatar;
-                const publicId = avatarUrl.substring(avatarUrl.lastIndexOf('/') + 1);
+                const fileName = avatarUrl.substring(avatarUrl.lastIndexOf('/') + 1);
+                const publicId = fileName.split('.')[0];
                 await this.cloudinaryService.deleteImage(
                     publicId,
                     settings.CLOUDINARY.avatarFolder || '',
@@ -66,7 +67,8 @@ export class UserUpdateController {
         } else if (requestData.avatar) {
             if (user.avatar) {
                 const avatarUrl = user.avatar;
-                const publicId = avatarUrl.substring(avatarUrl.lastIndexOf('/') + 1);
+                const fileName = avatarUrl.substring(avatarUrl.lastIndexOf('/') + 1); // file name with extension
+                const publicId = fileName.split('.')[0]; // file name without extension (required by cloudinary)
                 await this.cloudinaryService.deleteImage(
                     publicId,
                     settings.CLOUDINARY.avatarFolder || '',
