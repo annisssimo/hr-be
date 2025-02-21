@@ -17,7 +17,7 @@ export class JWTService {
     }
 
     public verify(token: string) {
-        return this.nestJwtService.verifyAsync(token);
+        return this.nestJwtService.verify(token);
     }
 
     private mapUserToTokenPayload(user: User) {

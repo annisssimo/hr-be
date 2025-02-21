@@ -1,9 +1,12 @@
-import { Controller, Post, Body, UsePipes, HttpCode } from '@nestjs/common';
-
+import { Post, Body, UsePipes, HttpCode, UseGuards } from '@nestjs/common';
+import { Controller } from '../../../decorators/controller.decorator';
 import { ZodValidationPipe } from '../../validation/validation.pipe';
 import { UsersListSchema, UsersListParams } from './users-list.schema';
 import { UsersReadService } from '../../shared/users/users-read.service';
-@Controller('v1/users/list')
+import { ControllerGuard } from '../../../guards/controller.guard';
+
+@UseGuards(ControllerGuard)
+@Controller('v1/users/list', { requireAuth: true })
 @UsePipes(new ZodValidationPipe(UsersListSchema))
 export class UsersListController {
     constructor(private readonly usersReadService: UsersReadService) {}

@@ -37,6 +37,10 @@ export class PasswordRequestResetController {
             .from(users)
             .where(eq(users.email, body.email))) as User[];
 
+        if (!user) {
+            throw new HttpException(ERROR_MESSAGES.USER_NOT_FOUND, HTTP_CODES.NOT_FOUND);
+        }
+
         try {
             const token = await this.passwordResetService.generateResetToken(user.id);
             const resetLink = this.generateResetLink(token);

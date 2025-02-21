@@ -62,7 +62,7 @@ export class ControllerGuard implements CanActivate {
             }
 
             try {
-                const JWTpayload = await this.jwtService.verify(token);
+                const JWTpayload = this.jwtService.verify(token);
                 const [user] = await this.drizzle
                     .select()
                     .from(users)

@@ -1,12 +1,12 @@
 import { eq } from 'drizzle-orm';
 import {
+    BadRequestException,
     Body,
-    Controller,
     Inject,
     NotFoundException,
     Put,
     Res,
-    UnauthorizedException,
+    UseGuards,
     UsePipes,
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
@@ -18,8 +18,11 @@ import { UsersService } from '../../../shared/users/users.service';
 import { ChangePasswordInputParams, ChangePasswordSchema } from './changePassword.schema';
 import { users } from '../../../shared/database/models';
 import { ZodValidationPipe } from '../../../validation/validation.pipe';
+import { ControllerGuard } from '../../../../guards/controller.guard';
+import { Controller } from '../../../../decorators/controller.decorator';
 
-@Controller('v1/profile')
+@UseGuards(ControllerGuard)
+@Controller('v1/profile', { requireAuth: true })
 export class ChangePasswordController {
     constructor(
         @Inject(PROVIDERS.DRIZZLE) private readonly db: NodePgDatabase,
@@ -37,7 +40,7 @@ export class ChangePasswordController {
 
         const isPasswordValid = await bcrypt.compare(body.oldPassword, user.password);
         if (!isPasswordValid) {
-            throw new UnauthorizedException(ERROR_MESSAGES.INVALID_OLD_PASSWORD);
+            throw new BadRequestException(ERROR_MESSAGES.INVALID_OLD_PASSWORD);
         }
 
         if (body.newPassword === body.oldPassword) {
