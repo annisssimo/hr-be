@@ -9,7 +9,7 @@ import { Api } from './api';
 import { PROVIDERS } from '../../src/constants';
 import { Factory } from './factories';
 import { CloudinaryService } from '../../src/modules/shared/database/providers/cloudinary.service';
-import { MailService } from '../../src/modules/shared/passwordReset/mail.service';
+import { MailService } from '../../src/modules/shared/mail/mail.service';
 
 interface TestAppSetup {
     app: INestApplication;

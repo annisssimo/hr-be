@@ -8,7 +8,7 @@ import { UserUpdateController } from './userUpdate/user-update.controller';
 import { UsersListController } from './usersList/users-list.controller';
 import { ChangePasswordController } from './profile/changePassword/changePassword.controller';
 import { PasswordResetController } from './auth/passwordReset/passwordReset.controller';
-import { MailService } from '../shared/passwordReset/mail.service';
+import { MailService } from '../shared/mail/mail.service';
 import { PasswordResetService } from '../shared/passwordReset/passwordReset.service';
 import { UsersService } from '../shared/users/users.service';
 import { PasswordResetModule } from '../shared/passwordReset/passwordReset.module';

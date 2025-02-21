@@ -1,0 +1,40 @@
+<div
+    style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333333; line-height: 1.5; text-align: center;'
+>
+    <h1 style='color: #004DD7; font-size: 24px; margin-bottom: 20px;'>Hello, {{userName}}!</h1>
+
+    {{#if isConfirmed}}
+        <p>Your registration in Career Day has been
+            <strong style='color: green;'>approved</strong>.</p>
+        <p>You can log in by clicking the button below:</p>
+        <div style='margin: 25px 0;'>
+            <a
+                href='{{loginLink}}'
+                style='background-color: #004DD7; 
+                        color: white; 
+                        padding: 12px 25px; 
+                        text-decoration: none; 
+                        border-radius: 4px; 
+                        font-weight: bold;
+                        display: inline-block;'
+            >
+                Login
+            </a>
+        </div>
+        <p>If the button doesn’t work, use this link:
+            <br />
+            <a
+                href='{{loginLink}}'
+                style='color: #004DD7; word-break: break-all;'
+            >{{loginLink}}</a></p>
+    {{else}}
+        <p>We are sorry, but your registration has been
+            <strong style='color: red;'>declined</strong>.</p>
+        <p>You can try registering with another email or contact your manager.</p>
+    {{/if}}
+
+    <hr style='border: 0; border-top: 1px solid #ddd; margin: 30px 0;' />
+    <div style='font-size: 0.9em; color: #666;'>
+        <p>Best regards,<br />Career Day Team</p>
+    </div>
+</div>

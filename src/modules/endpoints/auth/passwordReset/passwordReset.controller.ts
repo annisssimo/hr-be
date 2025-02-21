@@ -11,7 +11,7 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 
 import { PasswordResetService } from '../../../shared/passwordReset/passwordReset.service';
 import { UsersService } from '../../../shared/users/users.service';
-import { MailService } from '../../../shared/passwordReset/mail.service';
+import { MailService } from '../../../shared/mail/mail.service';
 import { ERROR_MESSAGES, PROVIDERS } from '../../../../constants';
 import { ZodValidationPipe } from '../../../validation/validation.pipe';
 import { PasswordResetParams, PasswordResetSchema } from './passwordReset.schema';

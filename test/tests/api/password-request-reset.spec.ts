@@ -1,10 +1,11 @@
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { INestApplication } from '@nestjs/common';
+import * as sinon from 'sinon';
 
 import { Api } from '../../utils/api';
 import { Factory } from '../../utils/factories';
 import { setupTestApp } from '../../utils/setup-test-app';
-import { MailService } from '../../../src/modules/shared/passwordReset/mail.service';
+import { MailService } from '../../../src/modules/shared/mail/mail.service';
 import { HTTP_CODES } from '../../../src/constants';
 
 describe('[POST] /v1/auth/password-reset/request', () => {
@@ -22,7 +23,7 @@ describe('[POST] /v1/auth/password-reset/request', () => {
     });
 
     afterEach(() => {
-        mailServiceMock.sendMail.resetHistory();
+        mailServiceMock.sendPasswordResetEmail.resetHistory();
     });
 
     it('should return 201 when password reset request is successful', async () => {
@@ -32,14 +33,14 @@ describe('[POST] /v1/auth/password-reset/request', () => {
         const result = await api.request.passwordRequestReset({ email });
 
         expect(result.status).toBe(HTTP_CODES.CREATED);
-        expect(mailServiceMock.sendMail.calledOnce).toBe(true);
+        expect(mailServiceMock.sendPasswordResetEmail.calledOnce).toBe(true);
     });
 
     it('should return 404 if email is not found', async () => {
         const result = await api.request.passwordRequestReset({ email: faker.internet.email() });
 
         expect(result.status).toBe(HTTP_CODES.NOT_FOUND);
-        expect(mailServiceMock.sendMail.called).toBe(false);
+        expect(mailServiceMock.sendPasswordResetEmail.called).toBe(false);
     });
 
     it('should return 400 if email format is invalid', async () => {
@@ -48,7 +49,7 @@ describe('[POST] /v1/auth/password-reset/request', () => {
         const result = await api.request.passwordRequestReset({ email: invalidEmail });
 
         expect(result.status).toBe(HTTP_CODES.BAD_REQUEST);
-        expect(mailServiceMock.sendMail.called).toBe(false);
+        expect(mailServiceMock.sendPasswordResetEmail.called).toBe(false);
     });
 
     it('should return 201 for multiple valid requests', async () => {
@@ -57,10 +58,10 @@ describe('[POST] /v1/auth/password-reset/request', () => {
 
         const firstResult = await api.request.passwordRequestReset({ email });
         expect(firstResult.status).toBe(HTTP_CODES.CREATED);
-        expect(mailServiceMock.sendMail.calledOnce).toBe(true);
+        expect(mailServiceMock.sendPasswordResetEmail.calledOnce).toBe(true);
 
         const secondResult = await api.request.passwordRequestReset({ email });
         expect(secondResult.status).toBe(HTTP_CODES.CREATED);
-        expect(mailServiceMock.sendMail.calledTwice).toBe(true);
+        expect(mailServiceMock.sendPasswordResetEmail.calledTwice).toBe(true);
     });
 });

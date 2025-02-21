@@ -4,13 +4,17 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
 
 import { User, users } from '../database/models';
-import { ERROR_MESSAGES, PROVIDERS } from '../../../constants';
+import { ERROR_MESSAGES, PROVIDERS, USER_STATUS } from '../../../constants';
 import { RegisterInputParams } from '../../endpoints/auth/register/register.schema';
 import { UpdateInputParams } from '../../endpoints/userUpdate/user-update.schema';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class UsersService {
-    constructor(@Inject(PROVIDERS.DRIZZLE) private readonly drizzle: NodePgDatabase) {}
+    constructor(
+        @Inject(PROVIDERS.DRIZZLE) private readonly drizzle: NodePgDatabase,
+        private readonly mailService: MailService,
+    ) {}
 
     public async createUser(newUser: RegisterInputParams): Promise<User> {
         const hashedPassword = await hash(newUser.password, 8);
@@ -35,6 +39,19 @@ export class UsersService {
             .set(updateData)
             .where(eq(users.id, userId))
             .returning()) as User[];
+
+        if (
+            updateData.status === USER_STATUS.ACTIVE ||
+            updateData.status === USER_STATUS.ARCHIVED
+        ) {
+            const isConfirmed = updateData.status === USER_STATUS.ACTIVE;
+            await this.mailService.sendRegistrationStatusEmail(
+                updatedUser.email,
+                isConfirmed,
+                `${updatedUser.firstName} ${updatedUser.lastName}`,
+            );
+        }
+
         return updatedUser;
     }
 }

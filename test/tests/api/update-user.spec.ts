@@ -7,11 +7,13 @@ import sinon from 'sinon';
 import { CloudinaryService } from '../../../src/modules/shared/database/providers/cloudinary.service';
 import { UploadApiResponse } from 'cloudinary';
 import { randomBase64 } from '../../utils/randomBase64';
+import { MailService } from '../../../src/modules/shared/mail/mail.service';
 
 describe('[PUT] /v1/users/:userId', () => {
     let app: INestApplication;
     let api: Api;
     let factory: Factory;
+    let mailServiceMock: sinon.SinonStubbedInstance<MailService>;
     let cloudinaryServiceMock: sinon.SinonStubbedInstance<CloudinaryService>;
     let adminUser: { result: any; payload: any };
     let adminToken: string;
@@ -22,6 +24,7 @@ describe('[PUT] /v1/users/:userId', () => {
         app = setup.app;
         api = setup.api;
         factory = setup.factory;
+        mailServiceMock = setup.mailServiceMock;
         cloudinaryServiceMock = setup.cloudinaryServiceMock; // Using injected mock
 
         adminUser = await factory.user({
@@ -46,6 +49,7 @@ describe('[PUT] /v1/users/:userId', () => {
     });
 
     afterEach(() => {
+        mailServiceMock.sendRegistrationStatusEmail.resetHistory();
         cloudinaryServiceMock.uploadImage.resetHistory();
         cloudinaryServiceMock.deleteImage.resetHistory();
     });
@@ -60,6 +64,7 @@ describe('[PUT] /v1/users/:userId', () => {
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('status', USER_STATUS.ARCHIVED);
         expect(response.body).toHaveProperty('role', USER_ROLE.MANAGER);
+        expect(mailServiceMock.sendRegistrationStatusEmail.calledOnce).toBe(true);
     });
 
     it('should fail without an authorization header', async () => {
@@ -69,6 +74,7 @@ describe('[PUT] /v1/users/:userId', () => {
             role: USER_ROLE.EMPLOYEE,
         });
         expect(response.status).toBe(401);
+        expect(mailServiceMock.sendRegistrationStatusEmail.notCalled).toBe(true);
     });
 
     it('should fail if a non-admin user attempts to access admin fields', async () => {
@@ -90,6 +96,7 @@ describe('[PUT] /v1/users/:userId', () => {
             .set('Authorization', `Bearer ${nonAdminToken}`);
 
         expect(response.status).toBe(403);
+        expect(mailServiceMock.sendRegistrationStatusEmail.notCalled).toBe(true);
     });
 
     it('should fail if regular user attempts to access manager fields', async () => {
@@ -110,6 +117,7 @@ describe('[PUT] /v1/users/:userId', () => {
             .set('Authorization', `Bearer ${nonAdminToken}`);
 
         expect(response.status).toBe(403);
+        expect(mailServiceMock.sendRegistrationStatusEmail.notCalled).toBe(true);
     });
 
     it('should fail if regular user attempts to access other users field', async () => {
@@ -130,6 +138,7 @@ describe('[PUT] /v1/users/:userId', () => {
             .set('Authorization', `Bearer ${nonAdminToken}`);
 
         expect(response.status).toBe(403);
+        expect(mailServiceMock.sendRegistrationStatusEmail.notCalled).toBe(true);
     });
 
     it('should succeed if regular user attempts to access own field', async () => {

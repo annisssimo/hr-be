@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PasswordResetService } from '../../shared/passwordReset/passwordReset.service';
 import { UsersService } from '../../shared/users/users.service';
-import { MailService } from '../../shared/passwordReset/mail.service';
+import { MailService } from '../mail/mail.service';
 import { ProvidersModule } from '../database/providers/providers.module';
 import { PasswordResetController } from '../../endpoints/auth/passwordReset/passwordReset.controller';
 import { PasswordRequestResetController } from '../../endpoints/auth/passwordRequestReset/passwordRequestReset.controller';
