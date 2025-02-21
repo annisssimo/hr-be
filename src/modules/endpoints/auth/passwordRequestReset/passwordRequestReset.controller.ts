@@ -7,12 +7,12 @@ import {
     UsePipes,
     HttpException,
 } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 
 import { PasswordResetService } from '../../../shared/passwordReset/passwordReset.service';
 import { MailService } from '../../../shared/passwordReset/mail.service';
-import { ERROR_MESSAGES, HTTP_CODES, PROVIDERS } from '../../../../constants';
+import { ERROR_MESSAGES, HTTP_CODES, PROVIDERS, USER_STATUS } from '../../../../constants';
 import { User, users } from '../../../shared/database/models/users';
 import { ZodValidationPipe } from '../../../validation/validation.pipe';
 import {
@@ -35,8 +35,9 @@ export class PasswordRequestResetController {
         const [user] = (await this.db
             .select()
             .from(users)
-            .where(eq(users.email, body.email))) as User[];
-
+            .where(
+                and(eq(users.email, body.email), eq(users.status, USER_STATUS.ACTIVE)),
+            )) as User[];
         if (!user) {
             throw new HttpException(ERROR_MESSAGES.USER_NOT_FOUND, HTTP_CODES.NOT_FOUND);
         }
