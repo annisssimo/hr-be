@@ -69,3 +69,10 @@ export const ERROR_MESSAGES = {
     PASSWORD_UPDATE_FAILED: 'Failed to update password',
     EMAIL_NOT_VERIFIED: 'Email is not verified',
 };
+
+export const enum APPLICATION_STATUS {
+    PENDING = 'pending',
+    REVIEWED = 'reviewed',
+    ACCEPTED = 'accepted',
+    REJECTED = 'rejected',
+}

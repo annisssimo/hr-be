@@ -78,6 +78,20 @@
       "when": 1739900798415,
       "tag": "0010_fix_reset_tokens_table",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1741030251801,
+      "tag": "0011_add_vacancies_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1741041011285,
+      "tag": "0012_add_applications_table",
+      "breakpoints": true
     }
   ]
 }

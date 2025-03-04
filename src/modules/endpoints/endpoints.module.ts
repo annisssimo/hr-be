@@ -14,9 +14,21 @@ import { UsersService } from '../shared/users/users.service';
 import { PasswordResetModule } from '../shared/passwordReset/passwordReset.module';
 import { PasswordRequestResetController } from './auth/passwordRequestReset/passwordRequestReset.controller';
 import { JWTModule } from '../shared/jwt/jwt.module';
+import { ResumeController } from './resume/resume.controller';
+import { ResumeService } from '../shared/resume/resume.service';
+import { ResumeComparisonService } from '../shared/resume-comparison/resume-comparison.service';
+import { VacanciesModule } from '../shared/vacancies/vacancies.module';
+import { ApplicationsModule } from '../shared/applications/applications.module';
 
 @Module({
-    imports: [UsersModule, ProvidersModule, PasswordResetModule, JWTModule],
+    imports: [
+        UsersModule,
+        ProvidersModule,
+        PasswordResetModule,
+        JWTModule,
+        VacanciesModule,
+        ApplicationsModule,
+    ],
     controllers: [
         RegisterController,
         LoginController,
@@ -25,7 +37,14 @@ import { JWTModule } from '../shared/jwt/jwt.module';
         ChangePasswordController,
         PasswordResetController,
         PasswordRequestResetController,
+        ResumeController,
     ],
-    providers: [PasswordResetService, UsersService, MailService],
+    providers: [
+        PasswordResetService,
+        UsersService,
+        MailService,
+        ResumeService,
+        ResumeComparisonService,
+    ],
 })
 export class EndpointsModule {}
