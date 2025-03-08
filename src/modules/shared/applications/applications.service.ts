@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { PROVIDERS } from '../../../constants';
-import { Application, applications } from '../database/models';
+import { Application, applications, vacancies } from '../database/models';
 
 @Injectable()
 export class ApplicationsService {
@@ -32,8 +32,20 @@ export class ApplicationsService {
     }
 
     // Получение заявок кандидата
-    public async getApplicationsByCandidateId(candidateId: string): Promise<Application[]> {
-        return this.db.select().from(applications).where(eq(applications.candidateId, candidateId));
+    public async getApplicationsByCandidateId(candidateId: string): Promise<ExtendedApplication[]> {
+        const result = await this.db
+            .select()
+            .from(applications)
+            .innerJoin(vacancies, eq(applications.vacancyId, vacancies.id))
+            .where(eq(applications.candidateId, candidateId));
+
+        return result.map((item) => ({
+            ...item.applications,
+            vacancyTitle: item.vacancies.title,
+            skills: item.vacancies.skills,
+            location: item.vacancies.location,
+            salary: item.vacancies.salary,
+        }));
     }
 
     // Обновление статуса заявки
@@ -55,3 +67,12 @@ export class ApplicationsService {
         return result.rowCount ? result.rowCount > 0 : false;
     }
 }
+
+interface ApplicationDetails {
+    vacancyTitle: string;
+    skills: string;
+    location: string | null;
+    salary: number | null;
+}
+
+export type ExtendedApplication = Application & ApplicationDetails;
