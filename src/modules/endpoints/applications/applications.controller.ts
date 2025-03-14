@@ -13,11 +13,16 @@ export class ApplicationsController {
 
     // Создание заявки
     @Post()
-    public async createApplication(@Body() createApplicationDto: CreateApplicationDto) {
-        return this.applicationsService.createApplication(
-            createApplicationDto.candidateId,
-            createApplicationDto.vacancyId,
-        );
+    public async createApplication(
+        @Body() { candidateId, vacancyId, resumeId, coverLetter, source }: CreateApplicationDto,
+    ) {
+        return this.applicationsService.createApplication({
+            candidateId,
+            vacancyId,
+            resumeId,
+            coverLetter,
+            source,
+        });
     }
 
     // Получение всех заявок
@@ -40,6 +45,15 @@ export class ApplicationsController {
     @Get('candidate/:candidateId')
     public async getApplicationsByCandidateId(@Param('candidateId') candidateId: string) {
         return this.applicationsService.getApplicationsByCandidateId(candidateId);
+    }
+
+    @Get('vacancy/:vacancyId')
+    public async getApplicationsByVacancyId(@Param('vacancyId') vacancyId: string) {
+        const applications = await this.applicationsService.getApplicationsByVacancyId(vacancyId);
+        if (!applications.length) {
+            throw new NotFoundException('No applications found for this vacancy');
+        }
+        return applications;
     }
 
     // Обновление статуса заявки

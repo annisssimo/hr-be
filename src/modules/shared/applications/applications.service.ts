@@ -2,18 +2,44 @@ import { Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { PROVIDERS } from '../../../constants';
-import { Application, applications, vacancies } from '../database/models';
+import { Application, applications, vacancies, resumes, users } from '../database/models';
+import { CreateApplicationDto } from '../../endpoints/applications/applications.schema';
 
 @Injectable()
 export class ApplicationsService {
     constructor(@Inject(PROVIDERS.DRIZZLE) private readonly db: NodePgDatabase) {}
 
     // Создание заявки
-    public async createApplication(candidateId: string, vacancyId: string): Promise<Application> {
+    public async createApplication({
+        candidateId,
+        vacancyId,
+        resumeId,
+        coverLetter,
+        source,
+    }: CreateApplicationDto): Promise<Application> {
+        // Проверяем, существует ли резюме и принадлежит ли оно кандидату
+        const [resume] = await this.db
+            .select()
+            .from(resumes)
+            .where(eq(resumes.id, resumeId))
+            .limit(1);
+
+        if (!resume || resume.candidateId !== candidateId) {
+            throw new Error('Resume not found');
+        }
+
+        // Создаем заявку
         const [newApplication] = await this.db
             .insert(applications)
-            .values({ candidateId, vacancyId })
+            .values({
+                candidateId,
+                vacancyId,
+                resumeId,
+                coverLetter,
+                source,
+            })
             .returning();
+
         return newApplication;
     }
 
@@ -41,6 +67,26 @@ export class ApplicationsService {
 
         return result.map((item) => ({
             ...item.applications,
+            vacancyTitle: item.vacancies.title,
+            skills: item.vacancies.skills,
+            location: item.vacancies.location,
+            salary: item.vacancies.salary,
+        }));
+    }
+
+    public async getApplicationsByVacancyId(vacancyId: string): Promise<ExtendedApplication[]> {
+        const result = await this.db
+            .select()
+            .from(applications)
+            .innerJoin(resumes, eq(applications.resumeId, resumes.id))
+            .innerJoin(users, eq(resumes.candidateId, users.id))
+            .innerJoin(vacancies, eq(applications.vacancyId, vacancies.id))
+            .where(eq(applications.vacancyId, vacancyId));
+
+        return result.map((item) => ({
+            ...item.applications,
+            candidateName: `${item.users.firstName} ${item.users.lastName}`,
+            resumeTitle: item.resumes.title,
             vacancyTitle: item.vacancies.title,
             skills: item.vacancies.skills,
             location: item.vacancies.location,

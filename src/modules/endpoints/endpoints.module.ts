@@ -19,6 +19,7 @@ import { ResumeService } from '../shared/resume/resume.service';
 import { ResumeComparisonService } from '../shared/resume-comparison/resume-comparison.service';
 import { VacanciesModule } from '../shared/vacancies/vacancies.module';
 import { ApplicationsModule } from '../shared/applications/applications.module';
+import { ResumesModule } from '../shared/resumes/resumes.module';
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { ApplicationsModule } from '../shared/applications/applications.module';
         JWTModule,
         VacanciesModule,
         ApplicationsModule,
+        ResumesModule,
     ],
     controllers: [
         RegisterController,

@@ -1,0 +1,1 @@
+ALTER TABLE "career_day"."resumes" ADD COLUMN "title" varchar(255);

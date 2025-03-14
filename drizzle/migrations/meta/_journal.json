@@ -5,92 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1737620729160,
-      "tag": "0000_create-schema-and-users-migartion",
+      "when": 1741726842799,
+      "tag": "0000_blue_triton",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1737622130106,
-      "tag": "0001_alter-users-migartion",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1737979834926,
-      "tag": "0002_add-users-status-assign-date",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1738080171291,
-      "tag": "0003_user-role-rework",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1738081122170,
-      "tag": "0004_user-role-fix",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1738085712300,
-      "tag": "0005_more-comrehansible-date-naming",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1738235552218,
-      "tag": "0006_omniscient_albert_cleary",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1738235887599,
-      "tag": "0007_flowery_pet_avengers",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1739439142824,
-      "tag": "0008_add_user_profile_fields",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1738856928876,
-      "tag": "0009_create_password_reset_tokens",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1739900798415,
-      "tag": "0010_fix_reset_tokens_table",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "7",
-      "when": 1741030251801,
-      "tag": "0011_add_vacancies_table",
-      "breakpoints": true
-    },
-    {
-      "idx": 12,
-      "version": "7",
-      "when": 1741041011285,
-      "tag": "0012_add_applications_table",
+      "when": 1741809978877,
+      "tag": "0001_chilly_newton_destine",
       "breakpoints": true
     }
   ]

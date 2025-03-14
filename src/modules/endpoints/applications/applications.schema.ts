@@ -3,6 +3,9 @@ import { z } from 'zod';
 export const CreateApplicationDtoSchema = z.object({
     candidateId: z.string().uuid('Candidate ID must be a valid UUID'),
     vacancyId: z.string().uuid('Vacancy ID must be a valid UUID'),
+    resumeId: z.string().uuid('Resume ID must be a valid UUID'),
+    coverLetter: z.string().optional(),
+    source: z.string().optional(),
 });
 
 export type CreateApplicationDto = z.infer<typeof CreateApplicationDtoSchema>;

@@ -1,1 +1,0 @@
-ALTER TABLE "public"."password_reset_tokens" SET SCHEMA "career_day";
