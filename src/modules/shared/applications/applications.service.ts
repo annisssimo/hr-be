@@ -43,9 +43,23 @@ export class ApplicationsService {
         return newApplication;
     }
 
-    // Получение всех заявок
-    public async getAllApplications(): Promise<Application[]> {
-        return this.db.select().from(applications);
+    public async getAllApplications(): Promise<ExtendedApplication[]> {
+        const result = await this.db
+            .select()
+            .from(applications)
+            .innerJoin(vacancies, eq(applications.vacancyId, vacancies.id))
+            .innerJoin(resumes, eq(applications.resumeId, resumes.id))
+            .innerJoin(users, eq(resumes.candidateId, users.id));
+
+        return result.map((item) => ({
+            ...item.applications, // Основные данные заявки
+            vacancyTitle: item.vacancies.title, // Название вакансии
+            skills: item.vacancies.skills, // Навыки вакансии
+            location: item.vacancies.location, // Локация вакансии
+            salary: item.vacancies.salary, // Зарплата вакансии
+            candidateName: `${item.users.firstName} ${item.users.lastName}`, // Имя кандидата
+            resumeTitle: item.resumes.title, // Название резюме
+        }));
     }
 
     // Получение заявки по ID

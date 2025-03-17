@@ -7,7 +7,7 @@ export const ResumesListSchema = z.object({
     filters: z
         .object({
             candidateId: z.string().uuid('Candidate ID must be a valid UUID').optional(),
-            title: z.string(),
+            title: z.string().optional(),
             skills: z.string().optional(),
             experience: z.string().optional(),
             education: z.string().optional(),
