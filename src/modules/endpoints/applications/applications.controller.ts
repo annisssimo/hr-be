@@ -49,7 +49,8 @@ export class ApplicationsController {
 
     @Get('vacancy/:vacancyId')
     public async getApplicationsByVacancyId(@Param('vacancyId') vacancyId: string) {
-        const applications = await this.applicationsService.getApplicationsByVacancyId(vacancyId);
+        const applications =
+            await this.applicationsService.getRankedApplicationsForVacancy(vacancyId);
         if (!applications.length) {
             throw new NotFoundException('No applications found for this vacancy');
         }

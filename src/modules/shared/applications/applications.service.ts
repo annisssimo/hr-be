@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { desc, eq, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { PROVIDERS } from '../../../constants';
 import { Application, applications, vacancies, resumes, users } from '../database/models';
@@ -9,7 +9,6 @@ import { CreateApplicationDto } from '../../endpoints/applications/applications.
 export class ApplicationsService {
     constructor(@Inject(PROVIDERS.DRIZZLE) private readonly db: NodePgDatabase) {}
 
-    // Создание заявки
     public async createApplication({
         candidateId,
         vacancyId,
@@ -17,7 +16,6 @@ export class ApplicationsService {
         coverLetter,
         source,
     }: CreateApplicationDto): Promise<Application> {
-        // Проверяем, существует ли резюме и принадлежит ли оно кандидату
         const [resume] = await this.db
             .select()
             .from(resumes)
@@ -28,7 +26,6 @@ export class ApplicationsService {
             throw new Error('Resume not found');
         }
 
-        // Создаем заявку
         const [newApplication] = await this.db
             .insert(applications)
             .values({
@@ -52,17 +49,16 @@ export class ApplicationsService {
             .innerJoin(users, eq(resumes.candidateId, users.id));
 
         return result.map((item) => ({
-            ...item.applications, // Основные данные заявки
-            vacancyTitle: item.vacancies.title, // Название вакансии
-            skills: item.vacancies.skills, // Навыки вакансии
-            location: item.vacancies.location, // Локация вакансии
-            salary: item.vacancies.salary, // Зарплата вакансии
-            candidateName: `${item.users.firstName} ${item.users.lastName}`, // Имя кандидата
-            resumeTitle: item.resumes.title, // Название резюме
+            ...item.applications,
+            vacancyTitle: item.vacancies.title,
+            skills: item.vacancies.skills,
+            location: item.vacancies.location,
+            salary: item.vacancies.salary,
+            candidateName: `${item.users.firstName} ${item.users.lastName}`,
+            resumeTitle: item.resumes.title,
         }));
     }
 
-    // Получение заявки по ID
     public async getApplicationById(id: string): Promise<Application | null> {
         const [application] = await this.db
             .select()
@@ -71,7 +67,6 @@ export class ApplicationsService {
         return application || null;
     }
 
-    // Получение заявок кандидата
     public async getApplicationsByCandidateId(candidateId: string): Promise<ExtendedApplication[]> {
         const result = await this.db
             .select()
@@ -108,8 +103,9 @@ export class ApplicationsService {
         }));
     }
 
-    // Ранжирование резюме по количеству совпадений навыков
-    public async getRankedResumesForVacancy(vacancyId: string) {
+    public async getRankedApplicationsForVacancy(
+        vacancyId: string,
+    ): Promise<ExtendedApplication[]> {
         const [vacancy] = await this.db
             .select()
             .from(vacancies)
@@ -120,22 +116,41 @@ export class ApplicationsService {
             throw new NotFoundException('Vacancy not found');
         }
 
-        const candidateResumes = await this.db
-            .select({
-                resume: resumes,
-                matchCount: sql<number>`(
-                    SELECT COUNT(*) 
-                    FROM unnest(${resumes.skills}) AS skill 
-                    WHERE skill = ANY(${vacancy.skills})
-                )`,
-            })
-            .from(resumes)
-            .orderBy(desc(sql`matchCount`));
+        const applicationsData = await this.db
+            .select()
+            .from(applications)
+            .innerJoin(resumes, eq(applications.resumeId, resumes.id))
+            .innerJoin(users, eq(resumes.candidateId, users.id))
+            .innerJoin(vacancies, eq(applications.vacancyId, vacancies.id))
+            .where(eq(applications.vacancyId, vacancyId));
 
-        return candidateResumes;
+        const rankedApplications = applicationsData.map((item) => {
+            const resumeSkills = item.resumes.skills || [];
+            const vacancySkills = vacancy.skills || [];
+            const matchCount = resumeSkills.filter((skill) => vacancySkills.includes(skill)).length;
+            const matchPercentage =
+                vacancySkills.length > 0
+                    ? parseFloat(((matchCount / vacancySkills.length) * 100).toFixed(2))
+                    : 0;
+
+            return {
+                ...item.applications,
+                candidateName: `${item.users.firstName} ${item.users.lastName}`,
+                resumeTitle: item.resumes.title,
+                vacancyTitle: item.vacancies.title,
+                skills: item.vacancies.skills,
+                location: item.vacancies.location,
+                salary: item.vacancies.salary,
+                matchCount,
+                matchPercentage,
+            };
+        });
+
+        rankedApplications.sort((a, b) => b.matchPercentage - a.matchPercentage);
+
+        return rankedApplications;
     }
 
-    // Обновление статуса заявки
     public async updateApplicationStatus(
         id: string,
         status: 'pending' | 'reviewed' | 'accepted' | 'rejected',
@@ -148,7 +163,6 @@ export class ApplicationsService {
         return updatedApplication || null;
     }
 
-    // Удаление заявки
     public async deleteApplication(id: string): Promise<boolean> {
         const result = await this.db.delete(applications).where(eq(applications.id, id));
         return result.rowCount ? result.rowCount > 0 : false;
@@ -160,6 +174,8 @@ interface ApplicationDetails {
     skills: string[];
     location: string | null;
     salary: number | null;
+    matchCount?: number;
+    matchPercentage?: number;
 }
 
 export type ExtendedApplication = Application & ApplicationDetails;
