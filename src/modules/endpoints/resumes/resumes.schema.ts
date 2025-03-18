@@ -27,7 +27,7 @@ export const ResumesListSchema = z.object({
 export const CreateResumeSchema = z.object({
     candidateId: z.string().uuid(),
     title: z.string().min(1, 'Название резюме обязательно'),
-    skills: z.string().min(1, 'Должен быть хотя бы один навык'),
+    skills: z.array(z.string()),
     experience: z.string().optional(),
     education: z.string().optional(),
     filePath: z.string().optional(),

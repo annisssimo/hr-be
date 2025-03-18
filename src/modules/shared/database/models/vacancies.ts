@@ -1,4 +1,4 @@
-import { date, uuid, varchar, integer } from 'drizzle-orm/pg-core';
+import { date, uuid, varchar, integer, text } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { careerDaySchema, users } from './users';
 
@@ -6,7 +6,7 @@ export const vacancies = careerDaySchema.table('vacancies', {
     id: uuid().primaryKey().defaultRandom(),
     title: varchar('title', { length: 255 }).notNull(),
     description: varchar('description', { length: 2000 }).notNull(),
-    skills: varchar('skills', { length: 1000 }).notNull(),
+    skills: text('skills').array().notNull(),
     location: varchar('location', { length: 255 }),
     salary: integer('salary'),
     createdAt: date('created_at').defaultNow().notNull(),

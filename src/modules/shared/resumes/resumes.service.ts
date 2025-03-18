@@ -39,13 +39,15 @@ export class ResumesService {
     }
 
     public async create(data: CreateResumeDto) {
+        const skillsArray = typeof data.skills === 'string' ? JSON.parse(data.skills) : data.skills;
+
         const [newResume] = await this.drizzle
             .insert(resumes)
             .values({
                 ...data,
-                skills: JSON.stringify(data.skills),
-                experience: JSON.stringify(data.experience),
-                education: JSON.stringify(data.education),
+                skills: skillsArray,
+                experience: data.experience,
+                education: data.education,
                 filePath: data.filePath || null,
             })
             .returning();

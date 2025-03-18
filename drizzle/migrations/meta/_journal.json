@@ -15,6 +15,13 @@
       "when": 1741809978877,
       "tag": "0001_chilly_newton_destine",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1742249786231,
+      "tag": "0002_slim_betty_brant",
+      "breakpoints": true
     }
   ]
 }

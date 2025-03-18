@@ -1,4 +1,4 @@
-import { date, uuid, varchar } from 'drizzle-orm/pg-core';
+import { date, text, uuid, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { careerDaySchema, users } from './users';
 
@@ -9,7 +9,7 @@ export const resumes = careerDaySchema.table('resumes', {
         .notNull(),
     title: varchar('title', { length: 255 }),
     filePath: varchar('file_path', { length: 255 }),
-    skills: varchar('skills', { length: 1000 }),
+    skills: text('skills').array(),
     experience: varchar('experience', { length: 1000 }),
     education: varchar('education', { length: 1000 }),
     createdAt: date('created_at').defaultNow().notNull(),

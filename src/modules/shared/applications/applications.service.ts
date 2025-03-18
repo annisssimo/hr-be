@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { desc, eq, sql } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { PROVIDERS } from '../../../constants';
 import { Application, applications, vacancies, resumes, users } from '../database/models';
@@ -108,6 +108,33 @@ export class ApplicationsService {
         }));
     }
 
+    // Ранжирование резюме по количеству совпадений навыков
+    public async getRankedResumesForVacancy(vacancyId: string) {
+        const [vacancy] = await this.db
+            .select()
+            .from(vacancies)
+            .where(eq(vacancies.id, vacancyId))
+            .limit(1);
+
+        if (!vacancy) {
+            throw new NotFoundException('Vacancy not found');
+        }
+
+        const candidateResumes = await this.db
+            .select({
+                resume: resumes,
+                matchCount: sql<number>`(
+                    SELECT COUNT(*) 
+                    FROM unnest(${resumes.skills}) AS skill 
+                    WHERE skill = ANY(${vacancy.skills})
+                )`,
+            })
+            .from(resumes)
+            .orderBy(desc(sql`matchCount`));
+
+        return candidateResumes;
+    }
+
     // Обновление статуса заявки
     public async updateApplicationStatus(
         id: string,
@@ -130,7 +157,7 @@ export class ApplicationsService {
 
 interface ApplicationDetails {
     vacancyTitle: string;
-    skills: string;
+    skills: string[];
     location: string | null;
     salary: number | null;
 }
